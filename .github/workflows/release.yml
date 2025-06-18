@@ -39,6 +39,7 @@ jobs:
           # Initialize variables
           LATEST_PATCH=-1
           LATEST_RELEASE="v0.0.0"
+          IS_FIRST_RELEASE=false
 
           # Process each release to find the highest patch for the specified major.minor
           if [ -n "$RELEASES" ]; then
@@ -63,12 +64,14 @@ jobs:
           # If no matching releases exist, start with v{major}.{minor}.0
           if [ "$LATEST_PATCH" -eq -1 ]; then
             LATEST_RELEASE="v${MAJOR}.${MINOR}.0"
+            IS_FIRST_RELEASE=true
             echo "No previous releases found for v${MAJOR}.${MINOR}.*. Starting with $LATEST_RELEASE"
           else
             echo "Latest release for v${MAJOR}.${MINOR}.*: $LATEST_RELEASE"
           fi
 
           echo "LATEST_RELEASE=$LATEST_RELEASE" >> $GITHUB_ENV
+          echo "IS_FIRST_RELEASE=$IS_FIRST_RELEASE" >> $GITHUB_ENV
 
       - name: Increment version
         id: increment_version
@@ -79,8 +82,16 @@ jobs:
           # Split version into components to get the patch version
           IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
 
-          # Increment patch version
-          PATCH=$((VERSION_PARTS[2] + 1))
+          # Check if this is the first release
+          if [ "${{ env.IS_FIRST_RELEASE }}" = "true" ]; then
+            # Don't increment patch version for the first release
+            PATCH=${VERSION_PARTS[2]}
+            echo "First release detected, not incrementing patch version"
+          else
+            # Increment patch version for subsequent releases
+            PATCH=$((VERSION_PARTS[2] + 1))
+            echo "Subsequent release detected, incrementing patch version"
+          fi
 
           # Create new version using major and minor from versions.yml
           NEW_VERSION="v${{ env.MAJOR }}.${{ env.MINOR }}.$PATCH"
@@ -90,13 +101,13 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEW_VERSION }}
           name: Release ${{ env.NEW_VERSION }}
-          files: release.txt
-          token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
+          make_latest: true
+          files: release.txt
 
       - name: Print Release URL
         run: |
