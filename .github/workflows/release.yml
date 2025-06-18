@@ -105,6 +105,7 @@ jobs:
         with:
           tag_name: ${{ env.NEW_VERSION }}
           name: Release ${{ env.NEW_VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
           make_latest: true
           files: release.txt
