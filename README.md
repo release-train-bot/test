@@ -7,10 +7,12 @@ This repository demonstrates an automated GitHub release process using GitHub Ac
 - Increments version numbers automatically based on the latest release
 - Publishes the `release.txt` file as a release asset
 - Prints a link to the newly created release in the workflow logs
+- Automatically deploys a React site to GitHub Pages after each release
+- Displays the latest release URL on the GitHub Pages site
 
 ## How It Works
 
-The GitHub Actions workflow (`.github/workflows/release.yml`) performs the following steps:
+The GitHub Actions workflow (`.github/workflows/release_client.yml`) performs the following steps:
 
 1. Triggers when code is pushed to the main branch
 2. Reads major and minor version numbers from `versions.yml` file
@@ -39,4 +41,25 @@ To customize the release process:
    major: 1
    minor: 0
    ```
-3. Edit the workflow file (`.github/workflows/release.yml`) to change versioning logic or add additional steps
+3. Edit the workflow file (`.github/workflows/release_client.yml`) to change versioning logic or add additional steps
+
+## GitHub Pages Site
+
+This repository also includes an automated GitHub Pages deployment:
+
+1. After each successful release, a GitHub workflow (`.github/workflows/release_site.yml`) is triggered
+2. The workflow builds a React application located in the `site` directory
+3. The latest release URL is passed to the React application during the build process
+4. The built site is deployed to the `gh-pages` branch
+5. The site is accessible at `https://{username}.github.io/{repository-name}/`
+
+### Site Development
+
+To develop the site locally:
+
+1. Navigate to the `site` directory
+2. Run `npm install` to install dependencies
+3. Run `npm start` to start the development server
+4. The site will be available at `http://localhost:3000`
+
+You can customize the site by editing the React components in the `site/src` directory.
