@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  create-release:
+  release-client:
     runs-on: ubuntu-latest
     outputs:
       release_url: ${{ steps.create_release.outputs.url }}
@@ -116,8 +116,8 @@ jobs:
         run: |
           echo "::notice::New release created: ${{ steps.create_release.outputs.url }}"
 
-  deploy-site:
-    needs: create-release
+  release-site:
+    needs: release-client
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -147,3 +147,5 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.RELEASE_PUBLISHER }}
