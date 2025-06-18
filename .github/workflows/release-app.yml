@@ -141,11 +141,9 @@ jobs:
         run: npm run build
 
       - name: Upload site as artifact
-        id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/build/
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
