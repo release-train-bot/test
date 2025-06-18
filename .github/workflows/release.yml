@@ -123,11 +123,11 @@ jobs:
           echo "::notice::New release created: ${{ steps.create_release.outputs.url }}"
 
   release-site:
-    needs: release-client
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    needs: release-client
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
