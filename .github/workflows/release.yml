@@ -149,12 +149,12 @@ jobs:
           REACT_APP_RELEASE_URL: ${{ needs.create_release.outputs.release_url }}
         run: npm run build
 
-      - name: Upload artifact
+      - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/build/
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy Site
         uses: actions/deploy-pages@v4
 
       - name: Print Published Site URL
