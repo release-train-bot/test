@@ -1,5 +1,4 @@
 # Automated GitHub Release Workflow
-
 This repository demonstrates an automated GitHub release process using GitHub Actions.
 
 ## Features
