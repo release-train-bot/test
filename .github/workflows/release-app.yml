@@ -8,6 +8,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    outputs:
+      release_url: ${{ steps.create_release.outputs.url }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -113,3 +115,37 @@ jobs:
       - name: Print Release URL
         run: |
           echo "::notice::New release created: ${{ steps.create_release.outputs.url }}"
+
+  deploy-site:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: ./site
+        run: npm ci
+
+      - name: Build Site
+        working-directory: ./site
+        env:
+          REACT_APP_RELEASE_URL: ${{ needs.create_release.outputs.release_url }}
+        run: npm run build
+
+      - name: Upload site as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/build/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
