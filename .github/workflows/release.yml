@@ -1,4 +1,4 @@
-name: Release App
+name: Release
 
 on:
   push:
@@ -149,3 +149,10 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           token: ${{ secrets.RELEASE_PUBLISHER }}
+
+      - name: Print Published Site URL
+        run: |
+          REPO_OWNER=$(echo "${{ github.repository }}" | cut -d '/' -f 1)
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+          SITE_URL="https://$REPO_OWNER.github.io/$REPO_NAME/"
+          echo "::notice::Published site is available at: $SITE_URL"
