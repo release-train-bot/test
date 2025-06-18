@@ -1,0 +1,104 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Read version from versions.yml
+        id: read_version
+        run: |
+          # Read major and minor versions from versions.yml
+          MAJOR=$(grep 'major:' versions.yml | awk '{print $2}')
+          MINOR=$(grep 'minor:' versions.yml | awk '{print $2}')
+
+          echo "MAJOR=$MAJOR" >> $GITHUB_ENV
+          echo "MINOR=$MINOR" >> $GITHUB_ENV
+          echo "Using major version: $MAJOR, minor version: $MINOR from versions.yml"
+
+      - name: Get latest release
+        id: get_latest_release
+        run: |
+          # Read major and minor versions from environment
+          MAJOR="${{ env.MAJOR }}"
+          MINOR="${{ env.MINOR }}"
+
+          # Get all releases using GitHub API
+          RELEASES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            grep '"tag_name":' | \
+            sed -E 's/.*"([^"]+)".*/\1/')
+
+          # Initialize variables
+          LATEST_PATCH=-1
+          LATEST_RELEASE="v0.0.0"
+
+          # Process each release to find the highest patch for the specified major.minor
+          if [ -n "$RELEASES" ]; then
+            while read -r release; do
+              # Remove 'v' prefix if it exists
+              VERSION=${release#v}
+
+              # Split version into components
+              IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
+
+              # Check if this release matches our major and minor versions
+              if [ "${VERSION_PARTS[0]}" = "$MAJOR" ] && [ "${VERSION_PARTS[1]}" = "$MINOR" ]; then
+                # Check if this patch is higher than what we've seen so far
+                if [ "${VERSION_PARTS[2]}" -gt "$LATEST_PATCH" ]; then
+                  LATEST_PATCH=${VERSION_PARTS[2]}
+                  LATEST_RELEASE=$release
+                fi
+              fi
+            done <<< "$RELEASES"
+          fi
+
+          # If no matching releases exist, start with v{major}.{minor}.0
+          if [ "$LATEST_PATCH" -eq -1 ]; then
+            LATEST_RELEASE="v${MAJOR}.${MINOR}.0"
+            echo "No previous releases found for v${MAJOR}.${MINOR}.*. Starting with $LATEST_RELEASE"
+          else
+            echo "Latest release for v${MAJOR}.${MINOR}.*: $LATEST_RELEASE"
+          fi
+
+          echo "LATEST_RELEASE=$LATEST_RELEASE" >> $GITHUB_ENV
+
+      - name: Increment version
+        id: increment_version
+        run: |
+          # Remove 'v' prefix if it exists
+          VERSION=${LATEST_RELEASE#v}
+
+          # Split version into components to get the patch version
+          IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
+
+          # Increment patch version
+          PATCH=$((VERSION_PARTS[2] + 1))
+
+          # Create new version using major and minor from versions.yml
+          NEW_VERSION="v${{ env.MAJOR }}.${{ env.MINOR }}.$PATCH"
+          echo "New version: $NEW_VERSION"
+
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_VERSION }}
+          name: Release ${{ env.NEW_VERSION }}
+          files: release.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+
+      - name: Print Release URL
+        run: |
+          echo "New release created: ${{ steps.create_release.outputs.url }}"
+          echo "::notice::New release created: ${{ steps.create_release.outputs.url }}"
