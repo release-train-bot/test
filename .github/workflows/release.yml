@@ -9,7 +9,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Read version from versions.yml
@@ -23,7 +23,7 @@ jobs:
           echo "MINOR=$MINOR" >> $GITHUB_ENV
           echo "Using major version: $MAJOR, minor version: $MINOR from versions.yml"
 
-      - name: Get latest release
+      - name: Get Latest Release
         id: get_latest_release
         run: |
           # Read major and minor versions from environment
@@ -73,7 +73,7 @@ jobs:
           echo "LATEST_RELEASE=$LATEST_RELEASE" >> $GITHUB_ENV
           echo "IS_FIRST_RELEASE=$IS_FIRST_RELEASE" >> $GITHUB_ENV
 
-      - name: Increment version
+      - name: Increment Version
         id: increment_version
         run: |
           # Remove 'v' prefix if it exists
@@ -112,5 +112,4 @@ jobs:
 
       - name: Print Release URL
         run: |
-          echo "New release created: ${{ steps.create_release.outputs.url }}"
           echo "::notice::New release created: ${{ steps.create_release.outputs.url }}"
