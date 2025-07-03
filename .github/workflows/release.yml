@@ -116,7 +116,7 @@ jobs:
           name: Release ${{ env.NEW_VERSION }}
           generate_release_notes: true
           make_latest: true
-          files: release.txt
+          files: RELEASE_NOTES.md
 
       - name: Print Release URL
         run: |
