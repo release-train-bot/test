@@ -1,8 +1,7 @@
 import React from 'react';
 
 function App() {
-  // The REACT_APP_RELEASE_URL will be set during the build process
-  const releaseUrl = process.env.REACT_APP_RELEASE_URL || 'No release URL available';
+  const releaseUrl = process.env.GITHUB_RELEASE_URL || 'No release URL available';
   
   return (
     <div className="App">

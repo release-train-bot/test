@@ -257,7 +257,7 @@ jobs:
       - name: Build Site
         working-directory: ./site
         env:
-          REACT_APP_RELEASE_URL: ${{ needs.release-client.outputs.release_url }}
+          GITHUB_RELEASE_URL: ${{ needs.release-client.outputs.release_url }}
         run: npm run build
 
       - name: Setup Pages
