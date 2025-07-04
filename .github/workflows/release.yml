@@ -35,19 +35,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-app
-          path: build/outputs/apk/release/*.apk
-          retention-days: 1
+          path: |
+            build/outputs/apk/release/*.apk
+            *.txt
 
   build-ios:
     runs-on: macos-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
 
       - name: Build iOS App
         run: |
@@ -59,8 +55,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ios-app
-          path: build/outputs/ios/*.ipa
-          retention-days: 1
+          path: |
+            build/outputs/ios/*.ipa
+            *.txt
 
   build-desktop:
     runs-on: ubuntu-latest
@@ -84,8 +81,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: desktop-app
-          path: build/compose/binaries/main/
-          retention-days: 1
+          path: |
+            build/compose/binaries/main/
+            *.txt
 
   release-client:
     needs: [build-android, build-ios, build-desktop]
@@ -194,6 +192,29 @@ jobs:
             echo "Release notes file does not exist or is empty, will use auto-generated notes"
           fi
 
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-app
+          path: ./artifacts/android
+
+      - name: Download iOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-app
+          path: ./artifacts/ios
+
+      - name: Download Desktop Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-app
+          path: ./artifacts/desktop
+
+      - name: List Downloaded Artifacts
+        run: |
+          echo "Listing downloaded artifacts:"
+          find ./artifacts -type f | sort          
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -203,6 +224,10 @@ jobs:
           generate_release_notes: ${{ env.RELEASE_NOTES_EXISTS == 'false' }}
           body_path: ${{ env.RELEASE_NOTES_EXISTS == 'true' && 'RELEASE_NOTES.md' || '' }}
           make_latest: true
+          files: |
+            ./artifacts/android/**/*
+            ./artifacts/ios/**/*
+            ./artifacts/desktop/**/*
 
       - name: Print Release URL
         run: |
