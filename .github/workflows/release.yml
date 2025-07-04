@@ -149,6 +149,10 @@ jobs:
           REACT_APP_RELEASE_URL: ${{ needs.create_release.outputs.release_url }}
         run: npm run build
 
+      - name: Setup Pages
+        id: setup_pages
+        uses: actions/configure-pages@v5
+
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
