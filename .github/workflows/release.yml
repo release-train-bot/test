@@ -108,15 +108,26 @@ jobs:
 
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
+      - name: Check Release Notes File
+        id: check_release_notes
+        run: |
+          if [ -s "RELEASE_NOTES.md" ]; then
+            echo "RELEASE_NOTES_EXISTS=true" >> $GITHUB_ENV
+            echo "Release notes file exists and is not empty, will use it for release notes"
+          else
+            echo "RELEASE_NOTES_EXISTS=false" >> $GITHUB_ENV
+            echo "Release notes file does not exist or is empty, will use auto-generated notes"
+          fi
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEW_VERSION }}
           name: Release ${{ env.NEW_VERSION }}
-          generate_release_notes: true
+          generate_release_notes: ${{ env.RELEASE_NOTES_EXISTS == 'false' }}
+          body_path: ${{ env.RELEASE_NOTES_EXISTS == 'true' && 'RELEASE_NOTES.md' || '' }}
           make_latest: true
-          files: RELEASE_NOTES.md
 
       - name: Print Release URL
         run: |
