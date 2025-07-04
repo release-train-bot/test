@@ -13,7 +13,82 @@ permissions:
   contents: write
 
 jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Android App
+        run: |
+          echo "Building Android app from Compose Multiplatform codebase" >> android.txt
+          # Add your Android build commands here
+          # For example: ./gradlew assembleRelease
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-app
+          path: build/outputs/apk/release/*.apk
+          retention-days: 1
+
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build iOS App
+        run: |
+          echo "Building iOS app from Compose Multiplatform codebase" >> ios.txt
+          # Add your iOS build commands here
+          # For example: xcodebuild -scheme YourScheme -configuration Release
+
+      - name: Upload iOS Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-app
+          path: build/outputs/ios/*.ipa
+          retention-days: 1
+
+  build-desktop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Desktop App
+        run: |
+          echo "Building Desktop app from Compose Multiplatform codebase" >> desktop.txt
+          # Add your Desktop build commands here
+          # For example: ./gradlew packageReleaseDistributionForCurrentOS
+
+      - name: Upload Desktop Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: desktop-app
+          path: build/compose/binaries/main/
+          retention-days: 1
+
   release-client:
+    needs: [build-android, build-ios, build-desktop]
     runs-on: ubuntu-latest
     outputs:
       release_url: ${{ steps.create_release.outputs.url }}
@@ -157,7 +232,7 @@ jobs:
       - name: Build Site
         working-directory: ./site
         env:
-          REACT_APP_RELEASE_URL: ${{ needs.create_release.outputs.release_url }}
+          REACT_APP_RELEASE_URL: ${{ needs.release-client.outputs.release_url }}
         run: npm run build
 
       - name: Setup Pages
