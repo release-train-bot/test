@@ -32,7 +32,7 @@ jobs:
           # For example: ./gradlew assembleRelease
 
       - name: Upload Android Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-app
           path: build/outputs/apk/release/*.apk
@@ -56,7 +56,7 @@ jobs:
           # For example: xcodebuild -scheme YourScheme -configuration Release
 
       - name: Upload iOS Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-app
           path: build/outputs/ios/*.ipa
@@ -81,7 +81,7 @@ jobs:
           # For example: ./gradlew packageReleaseDistributionForCurrentOS
 
       - name: Upload Desktop Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: desktop-app
           path: build/compose/binaries/main/
