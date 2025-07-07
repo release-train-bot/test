@@ -35,7 +35,7 @@ jobs:
         with:
           name: android-app
           path: |
-            build/outputs/apk/release/*.apk
+            **/build/outputs/apk/release/*.apk
 
   build-ios:
     runs-on: macos-latest
