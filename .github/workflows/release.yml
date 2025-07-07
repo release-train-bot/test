@@ -60,7 +60,53 @@ jobs:
             build/outputs/ios/*.ipa
             *.txt
 
-  build-desktop:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Windows App
+        run: |
+          ./gradlew packageReleaseDistributionForCurrentOS
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-app
+          path: |
+            **/build/compose/binaries/main-release/msi
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build macOS App
+        run: |
+          ./gradlew packageReleaseDistributionForCurrentOS
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: |
+            **/build/compose/binaries/main-release/dmg
+
+  build-linux:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -72,22 +118,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build Desktop App
+      - name: Build Linux App
         run: |
-          echo "Building Desktop app from Compose Multiplatform codebase" >> desktop.txt
-          # Add your Desktop build commands here
-          # For example: ./gradlew packageReleaseDistributionForCurrentOS
+          ./gradlew packageReleaseDistributionForCurrentOS
 
-      - name: Upload Desktop Artifact
+      - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-app
+          name: linux-app
           path: |
-            build/compose/binaries/main/
-            *.txt
+            **/build/compose/binaries/main/
 
   release-client:
-    needs: [build-android, build-ios, build-desktop]
+    needs: [build-android, build-ios, build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
     outputs:
       release_url: ${{ steps.create_release.outputs.url }}
@@ -205,11 +248,23 @@ jobs:
           name: ios-app
           path: ./artifacts/ios
 
-      - name: Download Desktop Artifact
+      - name: Download Windows Artifact
         uses: actions/download-artifact@v4
         with:
-          name: desktop-app
-          path: ./artifacts/desktop
+          name: windows-app
+          path: ./artifacts/windows
+
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-app
+          path: ./artifacts/macos
+
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-app
+          path: ./artifacts/linux
 
       - name: List Downloaded Artifacts
         run: |
@@ -226,9 +281,11 @@ jobs:
           body_path: ${{ env.RELEASE_NOTES_EXISTS == 'true' && 'RELEASE_NOTES.md' || '' }}
           make_latest: true
           files: |
+            ./artifacts/windows/**/*
+            ./artifacts/macos/**/*
+            ./artifacts/linux/**/*
             ./artifacts/android/**/*
             ./artifacts/ios/**/*
-            ./artifacts/desktop/**/*
 
       - name: Print Release URL
         run: |
