@@ -26,22 +26,22 @@ kotlin {
             }
         }
         commonMain.dependencies {
-            api(compose.foundation)
-            api(libs.kotlinx.coroutines.core)
-            api(libs.kotlinx.serialization.json)
-            api(libs.androidx.navigation.compose)
+            http(compose.foundation)
+            http(libs.kotlinx.coroutines.core)
+            http(libs.kotlinx.serialization.json)
+            http(libs.androidx.navigation.compose)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3)
         }
         androidMain.dependencies {
-            api(libs.androidx.appcompat)
-            api(libs.androidx.activity.compose)
-            api(libs.kotlinx.coroutines.android)
+            http(libs.androidx.appcompat)
+            http(libs.androidx.activity.compose)
+            http(libs.kotlinx.coroutines.android)
         }
         jvmMain.dependencies {
-            api(libs.kotlinx.coroutines.swing)
+            http(libs.kotlinx.coroutines.swing)
         }
         val skikoMain by creating {
             dependsOn(commonMain.get())

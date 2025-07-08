@@ -1,0 +1,17 @@
+{
+  "components": {
+    "AppAutocomplete": {
+      "loading": "Loading…",
+      "placeholder": "Select an option",
+      "noOptions": "No options available"
+    },
+    "AppToggleThemeBlock": {
+      "title": "Theme",
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    }
+  },
+  "features": {
+  }
+}

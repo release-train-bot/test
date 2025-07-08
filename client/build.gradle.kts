@@ -19,6 +19,7 @@ kotlin {
             baseName = "App"
             isStatic = true
         }
+        iosTarget.binaries.executable()
     }
     js(IR) {
         useEsModules()

@@ -5,10 +5,15 @@ build/
 dist/
 node_modules/
 
+.cache
 .idea
+.next
 .gradle
 .kotlin
 .vscode
 .project
 .settings
 .DS_Store
+
+.env
+.env.*
