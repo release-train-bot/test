@@ -8,7 +8,7 @@ const nextConfig = {
   devIndicators: {
     position: 'top-right'
   },
-  output: 'standalone'
+  output: 'export'
 };
 
 const withNextIntl = createNextIntlPlugin();

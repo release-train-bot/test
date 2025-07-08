@@ -1,11 +1,15 @@
 import * as React from 'react';
-import {Box} from '@mui/material';
+import {Link, Stack} from '@mui/material';
 import AppToggleThemeBlock from "@/components/AppToggleThemeBlock";
 
 export default function Page() {
   return (
-    <Box sx={{width: '400px', m: 10}}>
+    <Stack
+      sx={{width: '400px', m: 10}}
+      direction="column"
+      spacing={2}>
+      <Link>{process.env.GITHUB_RELEASE_URL || 'release url'}</Link>
       <AppToggleThemeBlock/>
-    </Box>
+    </Stack>
   );
 }

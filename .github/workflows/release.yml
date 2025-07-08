@@ -331,7 +331,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site/build/
+          path: site/out/
 
       - name: Deploy Site
         uses: actions/deploy-pages@v4
