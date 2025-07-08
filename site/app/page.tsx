@@ -4,8 +4,8 @@ import AppToggleThemeBlock from "@/components/AppToggleThemeBlock";
 
 export default function Page() {
   return (
-    <Box>
-      <AppToggleThemeBlock />
+    <Box sx={{width: '400px', m: 10}}>
+      <AppToggleThemeBlock/>
     </Box>
   );
 }

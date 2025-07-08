@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import {useTranslations} from 'next-intl';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -35,18 +37,11 @@ export default function AppToggleThemeBlock() {
     <Stack>
       <AppHeader>{t('title')}</AppHeader>
       <ToggleButtonGroup
+        fullWidth
         exclusive
         value={mode}
         color="primary"
         onChange={onChange}
-        style={{
-          boxShadow: 'none',
-        }}
-        sx={{
-          boxShadow: 'none',
-          elevation: 0,
-        }}
-        fullWidth
       >
         <IconToggleButton value="light">
           <LightModeIcon fontSize="small"/>
