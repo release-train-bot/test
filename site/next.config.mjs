@@ -8,7 +8,8 @@ const nextConfig = {
   devIndicators: {
     position: 'top-right'
   },
-  output: 'export'
+  output: 'export',
+  basePath: process.env.GITHUB_PAGES_BASE_PATH,
 };
 
 const withNextIntl = createNextIntlPlugin();
