@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import {Link, Stack} from '@mui/material';
 import AppToggleThemeBlock from "@/components/AppToggleThemeBlock";
@@ -15,7 +13,7 @@ export default function Page() {
     >
       <AppToggleThemeBlock/>
       <Link href={url}>{url}</Link>
-      <Link href='/client'>Client</Link>
+      <Link href='client'>Client</Link>
     </Stack>
   );
 }

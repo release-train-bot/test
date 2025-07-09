@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <>
       <FrameContent
-        url="/compose/index.html"
+        url="compose/index.html"
         onReady={onFrameReady}
       />
       {!isLoaded && <Loader/>}
@@ -23,7 +23,6 @@ type FrameContentProps = {
   url: string;
   onReady: Function;
 };
-
 
 function FrameContent({url, onReady}: FrameContentProps) {
   const frameRef = useRef<HTMLIFrameElement>(null);
