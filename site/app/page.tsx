@@ -9,12 +9,13 @@ export default function Page() {
 
   return (
     <Stack
-      direction="column"
       sx={{m: 8}}
-      spacing={8}>
+      spacing={8}
+      direction='column'
+    >
       <AppToggleThemeBlock/>
       <Link href={url}>{url}</Link>
-      <Link href="/client">Client</Link>
+      <Link href='/client'>Client</Link>
     </Stack>
   );
 }
