@@ -104,7 +104,7 @@ jobs:
         with:
           name: windows-app
           path: |
-            client/compose/binaries/main-release/msi
+            client/build/compose/binaries/main-release/msi
 
   build-macos:
     runs-on: macos-latest
@@ -130,7 +130,7 @@ jobs:
         with:
           name: macos-app
           path: |
-            client/compose/binaries/main-release/dmg
+            client/build/compose/binaries/main-release/dmg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -156,7 +156,7 @@ jobs:
         with:
           name: linux-app
           path: |
-            client/compose/binaries/main-release/deb
+            client/build/compose/binaries/main-release/deb
 
   release-client:
     needs: [ build-android, build-ios, build-windows, build-macos, build-linux, build-web ]
