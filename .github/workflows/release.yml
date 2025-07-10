@@ -35,7 +35,7 @@ jobs:
         with:
           name: web-app
           path: |
-            **/build/dist/js/productionExecutable/**
+            **/build/dist/js/productionExecutable/
 
   build-android:
     runs-on: ubuntu-latest
