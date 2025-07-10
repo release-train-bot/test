@@ -30,7 +30,7 @@ jobs:
         run: |
           chmod +x gradlew && ./gradlew jsBrowserDistribution
 
-      - name: Upload Web Artifact
+      - name: Upload Web Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: web-app
@@ -53,7 +53,7 @@ jobs:
         run: |
           chmod +x gradlew && ./gradlew assembleRelease
 
-      - name: Upload Android Artifact
+      - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android-app
@@ -72,7 +72,7 @@ jobs:
           # Add your iOS build commands here
           # For example: xcodebuild -scheme YourScheme -configuration Release
 
-      - name: Upload iOS Artifact
+      - name: Upload iOS Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ios-app
@@ -99,7 +99,7 @@ jobs:
         run: |
           chmod +x gradlew && ./gradlew packageReleaseDistributionForCurrentOS
 
-      - name: Upload Windows Artifact
+      - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-app
@@ -125,7 +125,7 @@ jobs:
         run: |
           chmod +x gradlew && ./gradlew packageReleaseDistributionForCurrentOS
 
-      - name: Upload macOS Artifact
+      - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
@@ -151,7 +151,7 @@ jobs:
         run: |
           chmod +x gradlew && ./gradlew packageReleaseDistributionForCurrentOS
 
-      - name: Upload Linux Artifact
+      - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-app
@@ -159,7 +159,7 @@ jobs:
             **/build/compose/binaries/main-release/deb
 
   release-client:
-    needs: [ build-android, build-ios, build-windows, build-macos, build-linux ]
+    needs: [ build-android, build-ios, build-windows, build-macos, build-linux, build-web ]
     runs-on: ubuntu-latest
     outputs:
       release_url: ${{ steps.create_release.outputs.url }}
@@ -265,35 +265,41 @@ jobs:
             echo "Release notes file does not exist or is empty, will use auto-generated notes"
           fi
 
-      - name: Download Android Artifact
+      - name: Download Android Artifacts
         uses: actions/download-artifact@v4
         with:
           name: android-app
           path: ./artifacts/android
 
-      - name: Download iOS Artifact
+      - name: Download iOS Artifacts
         uses: actions/download-artifact@v4
         with:
           name: ios-app
           path: ./artifacts/ios
 
-      - name: Download Windows Artifact
+      - name: Download Windows Artifacts
         uses: actions/download-artifact@v4
         with:
           name: windows-app
           path: ./artifacts/windows
 
-      - name: Download macOS Artifact
+      - name: Download macOS Artifacts
         uses: actions/download-artifact@v4
         with:
           name: macos-app
           path: ./artifacts/macos
 
-      - name: Download Linux Artifact
+      - name: Download Linux Artifacts
         uses: actions/download-artifact@v4
         with:
           name: linux-app
           path: ./artifacts/linux
+          
+      - name: Download Web Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: web-app
+          path: ./artifacts/web
 
       - name: List Downloaded Artifacts
         run: |
@@ -315,6 +321,7 @@ jobs:
             ./artifacts/linux/**/*
             ./artifacts/android/**/*
             ./artifacts/ios/**/*
+            ./artifacts/web
 
       - name: Print Release URL
         run: |
@@ -341,15 +348,20 @@ jobs:
         id: setup_pages
         uses: actions/configure-pages@v5
 
-      - name: Install Dependencies
-        working-directory: ./site
-        run: npm ci
-
-      - name: Download Web Artifact
+      - name: Download Web Artifacts
         uses: actions/download-artifact@v4
         with:
           name: web-app
           path: ./site/public/compose
+
+      - name: List Downloaded Artifacts
+        run: |
+          echo "Listing downloaded artifacts:"
+          find ./site -type f | sort
+
+      - name: Install Dependencies
+        working-directory: ./site
+        run: npm ci
 
       - name: Build Site
         working-directory: ./site
@@ -358,7 +370,7 @@ jobs:
           GITHUB_PAGES_BASE_PATH: ${{ steps.setup_pages.outputs.base_path }}
         run: npm run build
 
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/out/
