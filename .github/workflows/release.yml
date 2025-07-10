@@ -35,7 +35,7 @@ jobs:
         with:
           name: web-app
           path: |
-            **/build/dist/js/productionExecutable/
+            client/build/dist/js/productionExecutable/
 
   build-android:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
         with:
           name: android-app
           path: |
-            **/build/outputs/apk/release/*.apk
+            client/build/outputs/apk/release/*.apk
 
   build-ios:
     runs-on: macos-latest
@@ -104,7 +104,7 @@ jobs:
         with:
           name: windows-app
           path: |
-            **/build/compose/binaries/main-release/msi
+            client/compose/binaries/main-release/msi
 
   build-macos:
     runs-on: macos-latest
@@ -130,7 +130,7 @@ jobs:
         with:
           name: macos-app
           path: |
-            **/build/compose/binaries/main-release/dmg
+            client/compose/binaries/main-release/dmg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -156,7 +156,7 @@ jobs:
         with:
           name: linux-app
           path: |
-            **/build/compose/binaries/main-release/deb
+            client/compose/binaries/main-release/deb
 
   release-client:
     needs: [ build-android, build-ios, build-windows, build-macos, build-linux, build-web ]
