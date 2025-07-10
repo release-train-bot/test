@@ -32,12 +32,11 @@ function FrameContent({url, onReady}: FrameContentProps) {
       try {
         const canvas = frameRef.current?.contentDocument?.querySelector('canvas');
         if (canvas && (canvas.getContext('2d') || canvas.getContext('webgl2') || canvas.getContext('webgl'))) {
-          console.log('canvas ready');
           clearInterval(intervalId);
           onReady();
         }
       } catch (e) {
-        console.error("err", e);
+        console.error(e);
       }
     }, 300);
 
