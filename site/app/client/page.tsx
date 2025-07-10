@@ -29,10 +29,15 @@ function FrameContent({url, onReady}: FrameContentProps) {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const canvas = frameRef.current?.contentDocument?.querySelector('canvas');
-      if (canvas && (canvas.getContext('2d') || canvas.getContext('webgl') || canvas.getContext('webgl2'))) {
-        clearInterval(intervalId);
-        onReady();
+      try {
+        const canvas = frameRef.current?.contentDocument?.querySelector('canvas');
+        if (canvas && (canvas.getContext('2d') || canvas.getContext('webgl2') || canvas.getContext('webgl'))) {
+          console.log('canvas ready');
+          clearInterval(intervalId);
+          onReady();
+        }
+      } catch (e) {
+        console.error("err", e);
       }
     }, 300);
 

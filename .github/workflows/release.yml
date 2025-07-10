@@ -159,7 +159,7 @@ jobs:
             client/build/compose/binaries/main-release/deb
 
   release-client:
-    needs: [ build-android, build-ios, build-windows, build-macos, build-linux, build-web ]
+    needs: [ build-android, build-ios, build-windows, build-macos, build-linux ]
     runs-on: ubuntu-latest
     outputs:
       release_url: ${{ steps.create_release.outputs.url }}
@@ -294,12 +294,6 @@ jobs:
         with:
           name: linux-app
           path: ./artifacts/linux
-          
-      - name: Download Web Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: web-app
-          path: ./artifacts/web
 
       - name: List Downloaded Artifacts
         run: |
@@ -321,7 +315,6 @@ jobs:
             ./artifacts/linux/**/*
             ./artifacts/android/**/*
             ./artifacts/ios/**/*
-            ./artifacts/web
 
       - name: Print Release URL
         run: |
